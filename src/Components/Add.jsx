@@ -8,15 +8,15 @@ import { useDispatch, useSelector } from "react-redux";
 import avatar from "../Assets/avatar.png";
 import { addUser } from "../Redux/Slices/userSlice";
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Add = () => {
   const dispatch = useDispatch();
   const UserData = useSelector((state) => state.userReducer);
 
   const [data, setData] = useState({
-    id: UserData.length + 1,
+    id: UserData.length+2,
     email: "",
     first_name: "",
     last_name: "",
@@ -32,36 +32,36 @@ const Add = () => {
   }, [data.avatar]);
 
   const handleUpload = (e) => {
-    e.preventDefault()
-    const { id, email,first_name,last_name,avatar } = data;
-    if(!id || !email || !first_name || !last_name || !avatar){
+    e.preventDefault();
+    const { id, email, first_name, last_name, avatar } = data;
+    if (!id || !email || !first_name || !last_name || !avatar) {
       toast.warning(`Pls Fill the Form Completely..`);
-    }else{
-      const existEmail = UserData.find(user=>user.email === email)
-      if(!existEmail){
-        if(email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)){
-          dispatch(addUser({...data,avatar:preview}))
-          toast.success(`The data has been successfully added..`);
-          setData({
-            id: UserData.length + 2,
-            email: "",
-            first_name: "",
-            last_name: "",
-            avatar: "",
-          })
-          setPreview("")
-        }else{
-          toast.warning(`Invalid Email`);
-
+    } else {
+      const existEmail = UserData.find((user) => user.email === email);
+      const uid = UserData.find((user) => user.id === id);
+      if (!uid) {
+        if (!existEmail) {
+          if (email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)) {
+            dispatch(addUser({ ...data, avatar: preview }));
+            toast.success(`The data has been successfully added..`);
+            setData({
+              id: UserData.length+2,
+              email: "",
+              first_name: "",
+              last_name: "",
+              avatar: "",
+            });
+            setPreview("");
+          } else {
+            toast.warning(`Invalid Email`);
+          }
+        } else {
+          toast.warning(`All Ready Exist..`);
         }
-      }else{
-        toast.warning(`All Ready Exist..`);
-
+      } else {
+        toast.warning(`User Id Already Exists.. Pls Provide Unique Id`);
       }
-      
-     
     }
- 
   };
 
   return (
@@ -171,8 +171,7 @@ const Add = () => {
           </Col>
         </Row>
       </Card>
-    <ToastContainer position="top-center" autoClose={2000} />
-
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 };
